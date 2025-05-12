@@ -318,9 +318,10 @@ impl From<CanErrorFrame> for CanError {
                     can_error.protocol_violations.push(vtype);
                 }
             }
-            // CAN_ERR_PROT is set, but no protocol violations were found
+            // CAN_ERR_PROT is set, but no protocol violations were found.
             if can_error.protocol_violations.is_empty() {
-                can_error.decoding_failures.push(CanErrorDecodingFailure::ProtBitSetButNoneFound);
+                // Fallback to unspecified in this case.
+                can_error.protocol_violations.push(ViolationType::Unspecified);
             }
             match Location::try_from(frame.data()[3]) {
                 Ok(location) => can_error.location = Some(location),
@@ -663,8 +664,6 @@ pub enum CanErrorDecodingFailure {
     NotEnoughData(u8),
     /// The error type `ControllerProblem` was indicated but none of the data[1] bits decoded to any problem
     CtrlBitSetButNoneFound,
-    /// the error type `ProtocolViolation` was indicated but none of the data[2] bits decoded to a valid type
-    ProtBitSetButNoneFound,
     /// A location was specified for a ProtocolViolation, but the location
     /// was not valid.
     InvalidProtocolViolationLocation,
@@ -682,7 +681,6 @@ impl fmt::Display for CanErrorDecodingFailure {
             UnknownErrorType(_) => "unknown error type",
             NotEnoughData(_) => "not enough data",
             CtrlBitSetButNoneFound => "controller problem bit set, but no problems found",
-            ProtBitSetButNoneFound => "protocol problem bit set, but no violations found",
             InvalidProtocolViolationLocation => "not a valid protocol violation location",
             InvalidTransceiverError => "not a valid transceiver error",
         };
