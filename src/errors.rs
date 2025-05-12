@@ -318,9 +318,9 @@ impl From<CanErrorFrame> for CanError {
                     can_error.protocol_violations.push(vtype);
                 }
             }
-            // CAN_ERR_PROT is set, but no protocol violations were found.
+            // CAN_ERR_PROT is set, but no protocol violations were found
             if can_error.protocol_violations.is_empty() {
-                // Fallback to unspecified in this case.
+                // Fallback to unspecified in this case
                 can_error.protocol_violations.push(ViolationType::Unspecified);
             }
             match Location::try_from(frame.data()[3]) {
