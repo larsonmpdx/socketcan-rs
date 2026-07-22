@@ -82,10 +82,10 @@ use rt::can_ctrlmode;
 pub use rt::CanState;
 
 /// A result for Netlink errors.
-type NlResult<T> = Result<T, NlError>;
+pub type NlResult<T> = Result<T, NlError>;
 
 /// A Netlink error from an info query
-type NlInfoError = NlError<Rtm, Ifinfomsg>;
+pub type NlInfoError = NlError<Rtm, Ifinfomsg>;
 
 /// CAN bit-timing parameters
 pub type CanBitTiming = rt::can_bittiming;
